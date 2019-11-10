@@ -3,13 +3,13 @@
 
 #include <QApplication>
 #include <QBoxLayout>
+#include <QContextMenuEvent>
 #include <QDateTimeEdit>
-#include <QLabel>
 #include <QLineEdit>
 #include <QScreen>
 
 TaskView::TaskView(QWidget *parent)
-  : QDialog(parent)
+  : QWidget(parent)
   , date_(new QDateTimeEdit(this))
   , text_(new QLineEdit(this))
 {
@@ -27,9 +27,6 @@ TaskView::TaskView(QWidget *parent)
   }
 
   text_->setPlaceholderText(tr("Enter record text"));
-
-  connect(text_, &QLineEdit::returnPressed,  //
-          this, &TaskView::accept);
 }
 
 void TaskView::reset()
@@ -46,4 +43,18 @@ std::optional<Task> TaskView::task() const
     return {};
 
   return task;
+}
+
+void TaskView::keyPressEvent(QKeyEvent *event)
+{
+  if (event->key() == Qt::Key_Escape) {
+    close();
+  } else if (event->key() == Qt::Key_Return) {
+    const auto task = Task{text_->text(), date_->dateTime()};
+    if (task.isValid())
+      emit taskAdded(task);
+    close();
+  }
+
+  QWidget::keyPressEvent(event);
 }

@@ -5,6 +5,7 @@
 class TaskView;
 class TrayIcon;
 class MainWindow;
+struct Task;
 
 class Manager : public QObject
 {
@@ -15,7 +16,8 @@ public:
   ~Manager();
 
 private:
-  void addTask();
+  void showTaskView();
+  void addTask(const Task& task);
   void showMainWindow();
   void quit();
 

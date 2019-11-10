@@ -1,15 +1,13 @@
 #pragma once
 
-#include <QDialog>
-
-#include <optional>
+#include <QWidget>
 
 class Task;
 
 class QDateTimeEdit;
 class QLineEdit;
 
-class TaskView : public QDialog
+class TaskView : public QWidget
 {
   Q_OBJECT
 
@@ -18,7 +16,11 @@ public:
 
   void reset();
 
-  std::optional<Task> task() const;
+signals:
+  void taskAdded(const Task& task);
+
+protected:
+  void keyPressEvent(QKeyEvent* event) override;
 
 private:
   QDateTimeEdit* date_;

@@ -15,28 +15,38 @@ Manager::Manager(const QString &fileName)
   , fileName_(fileName)
 {
   connect(tray_.data(), &TrayIcon::addTaskRequested,  //
-          this, &Manager::addTask);
+          this, &Manager::showTaskView);
   connect(tray_.data(), &TrayIcon::mainWindowRequested,  //
           this, &Manager::showMainWindow);
   connect(tray_.data(), &TrayIcon::quitRequested,  //
           this, &Manager::quit);
+
+  taskView_->setWindowModality(Qt::WindowModal);
+
+  connect(taskView_.data(), &TaskView::taskAdded,  //
+          this, &Manager::addTask);
 }
 
 Manager::~Manager() = default;
 
-void Manager::addTask()
+void Manager::showTaskView()
 {
   SOFT_ASSERT(taskView_, return );
+  if (taskView_->isVisible()) {
+    taskView_->raise();
+    taskView_->activateWindow();
+    return;
+  }
+
   taskView_->reset();
-  if (taskView_->exec() == QDialog::Rejected)
-    return;
+  taskView_->show();
+}
 
-  const auto task = taskView_->task();
-  if (!task)
-    return;
-
+void Manager::addTask(const Task &task)
+{
+  SOFT_ASSERT(task.isValid(), return );
   Parser parser(fileName_);
-  parser.append(*task);
+  parser.append(task);
 }
 
 void Manager::showMainWindow()
