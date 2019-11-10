@@ -26,6 +26,8 @@ TaskView::TaskView(QWidget *parent)
     resize(screenSize.width() / 2, 1);
   }
 
+  text_->setPlaceholderText(tr("Enter record text"));
+
   connect(text_, &QLineEdit::returnPressed,  //
           this, &TaskView::accept);
 }
