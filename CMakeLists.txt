@@ -16,6 +16,8 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 add_executable(tasklog
   src/debug.h
   src/main.cpp
+  src/globalaction.cpp
+  src/globalaction.h
   src/mainwindow.cpp
   src/mainwindow.h
   src/manager.cpp
@@ -30,3 +32,9 @@ add_executable(tasklog
 )
 
 target_link_libraries(tasklog PRIVATE Qt5::Widgets libstdc++.so)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  find_package(Qt5 COMPONENTS X11Extras REQUIRED)
+  find_package(X11 REQUIRED)
+  target_link_libraries(tasklog PRIVATE Qt5::X11Extras X11)
+endif()
