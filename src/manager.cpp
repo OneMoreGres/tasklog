@@ -27,7 +27,7 @@ Manager::~Manager() = default;
 void Manager::addTask()
 {
   SOFT_ASSERT(taskView_, return );
-  taskView_->clear();
+  taskView_->reset();
   if (taskView_->exec() == QDialog::Rejected)
     return;
 
