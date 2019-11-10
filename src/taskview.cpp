@@ -1,9 +1,11 @@
 #include "taskview.h"
 #include "constants.h"
+#include "debug.h"
 #include "task.h"
 
 #include <QApplication>
 #include <QBoxLayout>
+#include <QCalendarWidget>
 #include <QContextMenuEvent>
 #include <QDateTimeEdit>
 #include <QLineEdit>
@@ -15,6 +17,7 @@ TaskView::TaskView(QWidget *parent)
   : QWidget(parent)
   , date_(new QDateTimeEdit(this))
   , text_(new QLineEdit(this))
+  , calendar_(nullptr)
 {
   setWindowTitle(tr("Add record"));
 
@@ -23,6 +26,10 @@ TaskView::TaskView(QWidget *parent)
   layout->addWidget(text_);
 
   date_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  date_->setDisplayFormat("yyyy.MM.dd hh:mm");
+  date_->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(date_, &QDateTimeEdit::customContextMenuRequested,  //
+          this, &TaskView::showCalendar);
 
   if (const auto screen = QApplication::primaryScreen()) {
     const auto screenSize = screen->availableSize();
@@ -41,6 +48,46 @@ TaskView::~TaskView()
   saveState();
 }
 
+void TaskView::showCalendar()
+{
+  if (!calendar_) {
+    calendar_ = new QCalendarWidget;
+    calendar_->setWindowModality(Qt::WindowModal);
+    connect(calendar_, &QCalendarWidget::selectionChanged,  //
+            this, &TaskView::applyCalendarDate);
+    calendar_->installEventFilter(this);
+  }
+
+  const auto date = date_->date();
+  calendar_->setCurrentPage(date.year(), date.month());
+  calendar_->showSelectedDate();
+  calendar_->show();
+}
+
+void TaskView::applyCalendarDate()
+{
+  SOFT_ASSERT(calendar_, return );
+  date_->setDate(calendar_->selectedDate());
+  calendar_->close();
+}
+
+bool TaskView::eventFilter(QObject *watched, QEvent *event)
+{
+  auto consume = false;
+  if (!(calendar_ && watched == calendar_))
+    return consume;
+
+  if (event->type() != QEvent::KeyPress)
+    return consume;
+
+  auto casted = static_cast<QKeyEvent *>(event);
+  if (casted->key() == Qt::Key_Escape) {
+    calendar_->close();
+  }
+
+  return consume;
+}
+
 void TaskView::reset()
 {
   date_->setDateTime(QDateTime::currentDateTime());
@@ -53,8 +100,13 @@ void TaskView::setVisible(bool visible)
   QSettings settings;
   settings.beginGroup(qs_taskViewGroup);
 
-  if (!visible && settings.value(qs_geometry) != saveGeometry())
-    settings.setValue(qs_geometry, saveGeometry());
+  if (!visible) {
+    if (calendar_)
+      calendar_->close();
+
+    if (settings.value(qs_geometry) != saveGeometry())
+      settings.setValue(qs_geometry, saveGeometry());
+  }
 
   QWidget::setVisible(visible);
 
