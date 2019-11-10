@@ -14,6 +14,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 add_executable(tasklog
+  src/constants.h
   src/debug.h
   src/main.cpp
   src/globalaction.cpp

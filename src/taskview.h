@@ -13,6 +13,7 @@ class TaskView : public QWidget
 
 public:
   explicit TaskView(QWidget *parent = nullptr);
+  ~TaskView();
 
   void reset();
 
@@ -23,6 +24,9 @@ protected:
   void keyPressEvent(QKeyEvent* event) override;
 
 private:
+  void saveState();
+  void restoreState();
+
   QDateTimeEdit* date_;
   QLineEdit* text_;
 };

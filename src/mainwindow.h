@@ -9,4 +9,8 @@ class MainWindow : public QMainWindow
 public:
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
+
+private:
+  void saveState();
+  void restoreState();
 };

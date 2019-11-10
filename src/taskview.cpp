@@ -1,4 +1,5 @@
 #include "taskview.h"
+#include "constants.h"
 #include "task.h"
 
 #include <QApplication>
@@ -7,6 +8,7 @@
 #include <QDateTimeEdit>
 #include <QLineEdit>
 #include <QScreen>
+#include <QSettings>
 
 TaskView::TaskView(QWidget *parent)
   : QWidget(parent)
@@ -24,9 +26,18 @@ TaskView::TaskView(QWidget *parent)
   if (const auto screen = QApplication::primaryScreen()) {
     const auto screenSize = screen->availableSize();
     resize(screenSize.width() / 2, 1);
+    move((screenSize.width() - width()) / 2,
+         (screenSize.height() - height()) / 2);
   }
 
   text_->setPlaceholderText(tr("Enter record text"));
+
+  restoreState();
+}
+
+TaskView::~TaskView()
+{
+  saveState();
 }
 
 void TaskView::reset()
@@ -36,13 +47,21 @@ void TaskView::reset()
   text_->setFocus();
 }
 
-std::optional<Task> TaskView::task() const
+void TaskView::saveState()
 {
-  const auto task = Task{text_->text(), date_->dateTime()};
-  if (!task.isValid())
-    return {};
+  QSettings settings;
+  settings.beginGroup(qs_taskViewGroup);
+  settings.setValue(qs_geometry, saveGeometry());
+  settings.endGroup();
+}
 
-  return task;
+void TaskView::restoreState()
+{
+  QSettings settings;
+  settings.beginGroup(qs_taskViewGroup);
+  if (settings.contains(qs_geometry))
+    restoreGeometry(settings.value(qs_geometry).toByteArray());
+  settings.endGroup();
 }
 
 void TaskView::keyPressEvent(QKeyEvent *event)
