@@ -47,6 +47,22 @@ void TaskView::reset()
   text_->setFocus();
 }
 
+void TaskView::setVisible(bool visible)
+{
+  QSettings settings;
+  settings.beginGroup(qs_taskViewGroup);
+
+  if (!visible && settings.value(qs_geometry) != saveGeometry())
+    settings.setValue(qs_geometry, saveGeometry());
+
+  QWidget::setVisible(visible);
+
+  if (visible && settings.contains(qs_geometry))
+    restoreGeometry(settings.value(qs_geometry).toByteArray());
+
+  settings.endGroup();
+}
+
 void TaskView::saveState()
 {
   QSettings settings;

@@ -16,6 +16,7 @@ public:
   ~TaskView();
 
   void reset();
+  void setVisible(bool visible) override;
 
 signals:
   void taskAdded(const Task& task);
