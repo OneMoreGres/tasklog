@@ -1,7 +1,10 @@
+#include "debug.h"
 #include "manager.h"
 
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QLockFile>
+#include <QStandardPaths>
 
 struct CmdLine {
   QString fileName;
@@ -39,6 +42,15 @@ int main(int argc, char *argv[])
   QCoreApplication::setApplicationVersion("0.1");
 
   a.setQuitOnLastWindowClosed(false);
+
+  const auto lockFileName =
+      QStandardPaths::writableLocation(QStandardPaths::TempLocation) +
+      QStringLiteral("/tasklog.lock");
+  QLockFile lockFile(lockFileName);
+  if (!lockFile.tryLock()) {
+    LWARNING() << "Another instance is running. Lock file is busy.";
+    return 0;
+  }
 
   const auto cmdLine = parseCmdLine(a);
   Manager manager(cmdLine.fileName);
