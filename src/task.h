@@ -6,6 +6,8 @@
 struct Task {
   QString text;
   QDateTime date;
+
+  bool isValid() const { return date.isValid() && !text.isEmpty(); }
 };
 
 inline QDebug operator<<(QDebug s, const Task& v)

@@ -39,11 +39,9 @@ void TaskView::reset()
 
 std::optional<Task> TaskView::task() const
 {
-  const auto text = text_->text();
-  const auto date = date_->dateTime();
-  if (text.isEmpty() || !date.isValid())
+  const auto task = Task{text_->text(), date_->dateTime()};
+  if (!task.isValid())
     return {};
 
-  const auto task = Task{text, date};
   return task;
 }
