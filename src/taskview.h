@@ -23,10 +23,14 @@ signals:
 
 protected:
   void keyPressEvent(QKeyEvent* event) override;
+  void contextMenuEvent(QContextMenuEvent* event) override;
 
 private:
   void saveState();
   void restoreState();
+
+  bool isFrameless() const;
+  void setFrameless(bool on);
 
   QDateTimeEdit* date_;
   QLineEdit* text_;

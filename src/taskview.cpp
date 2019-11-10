@@ -7,6 +7,7 @@
 #include <QContextMenuEvent>
 #include <QDateTimeEdit>
 #include <QLineEdit>
+#include <QMenu>
 #include <QScreen>
 #include <QSettings>
 
@@ -68,6 +69,7 @@ void TaskView::saveState()
   QSettings settings;
   settings.beginGroup(qs_taskViewGroup);
   settings.setValue(qs_geometry, saveGeometry());
+  settings.setValue(qs_frameless, isFrameless());
   settings.endGroup();
 }
 
@@ -77,7 +79,20 @@ void TaskView::restoreState()
   settings.beginGroup(qs_taskViewGroup);
   if (settings.contains(qs_geometry))
     restoreGeometry(settings.value(qs_geometry).toByteArray());
+  setFrameless(settings.value(qs_frameless, false).toBool());
   settings.endGroup();
+}
+
+bool TaskView::isFrameless() const
+{
+  return windowFlags() & Qt::FramelessWindowHint;
+}
+
+void TaskView::setFrameless(bool on)
+{
+  const auto visible = isVisible();
+  setWindowFlag(Qt::FramelessWindowHint, on);
+  setVisible(visible);
 }
 
 void TaskView::keyPressEvent(QKeyEvent *event)
@@ -92,4 +107,17 @@ void TaskView::keyPressEvent(QKeyEvent *event)
   }
 
   QWidget::keyPressEvent(event);
+}
+
+void TaskView::contextMenuEvent(QContextMenuEvent *event)
+{
+  QMenu menu;
+  auto toggleFrame = menu.addAction(tr("Show window frame"));
+  toggleFrame->setCheckable(true);
+  toggleFrame->setChecked(!isFrameless());
+
+  auto choice = menu.exec(event->globalPos());
+
+  if (choice == toggleFrame)
+    setFrameless(!toggleFrame->isChecked());
 }
