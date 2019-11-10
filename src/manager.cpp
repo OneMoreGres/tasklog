@@ -8,10 +8,11 @@
 
 #include <QApplication>
 
-Manager::Manager()
+Manager::Manager(const QString &fileName)
   : tray_(new TrayIcon)
   , taskView_(new TaskView)
   , mainWindow_(nullptr)
+  , fileName_(fileName)
 {
   connect(tray_.data(), &TrayIcon::addTaskRequested,  //
           this, &Manager::addTask);

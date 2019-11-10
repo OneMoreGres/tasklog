@@ -11,7 +11,7 @@ class Manager : public QObject
   Q_OBJECT
 
 public:
-  Manager();
+  explicit Manager(const QString& fileName);
   ~Manager();
 
 private:
