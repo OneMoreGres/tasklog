@@ -4,6 +4,36 @@
 
 #include <QFile>
 
+namespace
+{
+const auto listMark = QLatin1Char('*');
+
+struct TaskExtractor {
+  QVector<Task> tasks;
+  QString current;
+  void parseText()
+  {
+    if (current.startsWith(listMark))
+      current = current.mid(1).trimmed();
+
+    const auto spaceIndex = current.indexOf(QLatin1Char(' '));
+    const auto dateString = current.left(spaceIndex);
+    Task task;
+    task.date = QDateTime::fromString(dateString, Qt::ISODate);
+
+    if (!task.date.isValid())
+      return;
+
+    task.text = current.mid(spaceIndex);
+
+    if (task.isValid())
+      tasks.append(task);
+  }
+  void addText(const QString &text) { current += text; }
+  void setText(const QString &text) { current = text; }
+};
+}  // namespace
+
 Parser::Parser(const QString &fileName)
   : fileName_(fileName)
 {
@@ -11,7 +41,28 @@ Parser::Parser(const QString &fileName)
 
 QVector<Task> Parser::loadAll() const
 {
-  return {};
+  QFile f(fileName_);
+  if (!f.open(QFile::ReadWrite)) {
+    LERROR() << "Failed to open file for reading" << LARG(fileName_)
+             << LARG(f.errorString());
+    return {};
+  }
+
+  TaskExtractor extractor;
+  while (!f.atEnd()) {
+    const auto line = QString::fromUtf8(f.readLine());
+
+    if (line.isEmpty() || line.startsWith(listMark)) {
+      extractor.parseText();
+      extractor.setText(line);
+      continue;
+    }
+
+    extractor.addText(line);
+  }
+  extractor.parseText();
+
+  return extractor.tasks;
 }
 
 bool Parser::append(const Task &task)
@@ -24,7 +75,7 @@ bool Parser::append(const Task &task)
 
   QFile f(fileName_);
   if (!f.open(QFile::ReadWrite)) {
-    LERROR() << "Failed to open file" << LARG(fileName_)
+    LERROR() << "Failed to open file for writing" << LARG(fileName_)
              << LARG(f.errorString());
     return false;
   }
