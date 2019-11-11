@@ -4,6 +4,8 @@
 
 class TaskModel;
 class QTableView;
+class QLineEdit;
+class QSortFilterProxyModel;
 
 class MainWindow : public QMainWindow
 {
@@ -16,7 +18,10 @@ public:
 private:
   void saveState();
   void restoreState();
+  void applyFilter();
 
   TaskModel& model_;
+  QSortFilterProxyModel* proxy_;
   QTableView* view_;
+  QLineEdit* filter_;
 };
