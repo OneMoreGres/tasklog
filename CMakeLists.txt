@@ -28,6 +28,8 @@ add_executable(tasklog
   src/taskview.cpp
   src/taskview.h
   src/task.h
+  src/taskmodel.cpp
+  src/taskmodel.h
   src/trayicon.cpp
   src/trayicon.h
 )
