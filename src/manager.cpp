@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 #include "parser.h"
 #include "task.h"
+#include "taskmodel.h"
 #include "taskview.h"
 #include "trayicon.h"
 
@@ -11,8 +12,9 @@
 Manager::Manager(const QString &fileName)
   : tray_(new TrayIcon)
   , taskView_(new TaskView)
+  , parser_(new Parser(fileName))
   , mainWindow_(nullptr)
-  , fileName_(fileName)
+  , taskModel_(nullptr)
 {
   connect(tray_.data(), &TrayIcon::addTaskRequested,  //
           this, &Manager::showTaskView);
@@ -45,14 +47,22 @@ void Manager::showTaskView()
 void Manager::addTask(const Task &task)
 {
   SOFT_ASSERT(task.isValid(), return );
-  Parser parser(fileName_);
-  parser.append(task);
+  SOFT_ASSERT(parser_, return );
+  if (!parser_->append(task))
+    return;
+
+  if (taskModel_)
+    taskModel_->addTask(task);
 }
 
 void Manager::showMainWindow()
 {
-  if (!mainWindow_)
-    mainWindow_.reset(new MainWindow);
+  SOFT_ASSERT(parser_, return );
+  if (!mainWindow_) {
+    taskModel_.reset(new TaskModel);
+    mainWindow_.reset(new MainWindow(*taskModel_));
+    taskModel_->setTasks(parser_->loadAll());
+  }
 
   mainWindow_->show();
 }

@@ -7,6 +7,13 @@ TaskModel::TaskModel(QObject *parent)
 {
 }
 
+void TaskModel::setTasks(const QVector<Task> &tasks)
+{
+  beginResetModel();
+  tasks_ = tasks;
+  endResetModel();
+}
+
 TaskModel::~TaskModel() = default;
 
 void TaskModel::addTask(const Task &task)

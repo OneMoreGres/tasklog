@@ -9,7 +9,9 @@ class Parser
 public:
   explicit Parser(const QString &fileName);
 
-  void append(const Task &task);
+  QVector<Task> loadAll() const;
+
+  bool append(const Task &task);
 
 private:
   QString fileName_;

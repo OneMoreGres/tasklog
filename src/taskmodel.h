@@ -13,6 +13,7 @@ public:
   explicit TaskModel(QObject *parent = nullptr);
   ~TaskModel();
 
+  void setTasks(const QVector<Task> &tasks);
   void addTask(const Task &task);
 
   int rowCount(const QModelIndex &parent) const override;

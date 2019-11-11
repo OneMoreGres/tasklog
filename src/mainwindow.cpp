@@ -1,11 +1,24 @@
 #include "mainwindow.h"
 #include "constants.h"
+#include "debug.h"
+#include "taskmodel.h"
 
+#include <QBoxLayout>
+#include <QHeaderView>
 #include <QSettings>
+#include <QTableView>
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(TaskModel &model, QWidget *parent)
   : QMainWindow(parent)
+  , model_(model)
+  , view_(new QTableView(this))
 {
+  setCentralWidget(view_);
+
+  view_->setModel(&model_);
+  view_->horizontalHeader()->setStretchLastSection(true);
+  view_->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
+
   restoreState();
 }
 

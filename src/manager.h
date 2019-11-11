@@ -4,6 +4,8 @@
 
 class TaskView;
 class TrayIcon;
+class Parser;
+class TaskModel;
 class MainWindow;
 struct Task;
 
@@ -23,7 +25,7 @@ private:
 
   QScopedPointer<TrayIcon> tray_;
   QScopedPointer<TaskView> taskView_;
+  QScopedPointer<Parser> parser_;
   QScopedPointer<MainWindow> mainWindow_;
-
-  QString fileName_;
+  QScopedPointer<TaskModel> taskModel_;
 };
