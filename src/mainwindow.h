@@ -15,10 +15,13 @@ public:
   MainWindow(TaskModel& model, QWidget* parent = nullptr);
   ~MainWindow();
 
+  bool eventFilter(QObject* watched, QEvent* event) override;
+
 private:
   void saveState();
   void restoreState();
   void applyFilter();
+  void focusFilter();
 
   TaskModel& model_;
   QSortFilterProxyModel* proxy_;

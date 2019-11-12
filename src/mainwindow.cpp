@@ -1,10 +1,11 @@
 #include "mainwindow.h"
 #include "constants.h"
-#include "debug.h"
 #include "taskmodel.h"
 
+#include <QAction>
 #include <QBoxLayout>
 #include <QHeaderView>
+#include <QKeyEvent>
 #include <QLineEdit>
 #include <QSettings>
 #include <QSortFilterProxyModel>
@@ -23,9 +24,19 @@ MainWindow::MainWindow(TaskModel &model, QWidget *parent)
   layout->addWidget(view_);
 
   filter_->setPlaceholderText(tr("Type to filter..."));
+  filter_->installEventFilter(this);
+  filter_->setFocus();
 
   connect(filter_, &QLineEdit::textChanged,  //
           this, &MainWindow::applyFilter);
+
+  {
+    auto action = new QAction(this);
+    action->setShortcut(QKeySequence("Ctrl+F"));
+    addAction(action);
+    connect(action, &QAction::triggered,  //
+            this, &MainWindow::focusFilter);
+  }
 
   proxy_->setFilterCaseSensitivity(Qt::CaseSensitivity::CaseInsensitive);
   proxy_->setDynamicSortFilter(true);
@@ -72,4 +83,26 @@ void MainWindow::applyFilter()
 {
   const auto filter = filter_->text();
   proxy_->setFilterFixedString(filter);
+}
+
+void MainWindow::focusFilter()
+{
+  filter_->setFocus();
+}
+
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+  const auto consume = false;
+  if (watched != filter_ || event->type() != QEvent::KeyPress)
+    return consume;
+
+  auto casted = static_cast<QKeyEvent *>(event);
+  if (casted->key() == Qt::Key_Down) {
+    view_->setFocus();
+    view_->selectRow(0);
+  } else if (casted->key() == Qt::Key_Escape) {
+    filter_->clear();
+  }
+
+  return consume;
 }
