@@ -39,6 +39,9 @@ MainWindow::MainWindow(TaskModel &model, QWidget *parent)
                                            dateSampleWidth);
   view_->horizontalHeader()->setStretchLastSection(true);
   view_->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
+  view_->setSortingEnabled(true);
+  view_->horizontalHeader()->setSortIndicator(int(TaskModel::Column::Date),
+                                              Qt::AscendingOrder);
 
   restoreState();
 }
