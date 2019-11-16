@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.5)
 
 project(tasklog LANGUAGES CXX)
 
+set (VERSION "0.1.0")
+add_definitions(-DVERSION="${VERSION}")
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)

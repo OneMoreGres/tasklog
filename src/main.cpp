@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
   QApplication a(argc, argv);
   a.setApplicationName("TaskLog");
   a.setOrganizationName("Gres");
-  QCoreApplication::setApplicationVersion("0.1");
+  a.setApplicationVersion(VERSION);
 
   a.setQuitOnLastWindowClosed(false);
 
