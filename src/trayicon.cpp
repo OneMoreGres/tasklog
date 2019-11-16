@@ -32,7 +32,7 @@ TrayIcon::TrayIcon()
   }
 
   tray_->setContextMenu(menu);
-  tray_->setIcon(QIcon::fromTheme("edit-find"));
+  tray_->setIcon(QIcon(QLatin1String(":icons/app.png")));
   tray_->show();
 }
 

@@ -32,6 +32,8 @@ add_executable(tasklog
   src/taskmodel.h
   src/trayicon.cpp
   src/trayicon.h
+
+  resources.qrc
 )
 
 target_link_libraries(tasklog PRIVATE Qt5::Widgets libstdc++.so)
