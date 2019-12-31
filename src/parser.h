@@ -1,17 +1,22 @@
 #pragma once
 
-#include <QString>
+#include <QObject>
 
 class Task;
 
-class Parser
+class Parser : public QObject
 {
+  Q_OBJECT
 public:
-  explicit Parser(const QString &fileName);
+  explicit Parser(const QString& fileName);
+  ~Parser();
 
-  QVector<Task> loadAll() const;
+  void loadAll();
+  void append(const Task& task);
 
-  bool append(const Task &task);
+signals:
+  void loaded(const QVector<Task>& tasks);
+  void appended(const Task& task);
 
 private:
   QString fileName_;

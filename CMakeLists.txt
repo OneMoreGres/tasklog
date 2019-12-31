@@ -35,6 +35,8 @@ add_executable(tasklog
   src/taskmodel.h
   src/trayicon.cpp
   src/trayicon.h
+  src/filewriter.cpp
+  src/filewriter.h
 
   resources.qrc
 )

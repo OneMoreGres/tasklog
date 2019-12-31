@@ -12,7 +12,7 @@
 Manager::Manager(const QString &fileName)
   : tray_(new TrayIcon)
   , taskView_(new TaskView)
-  , parser_(new Parser(fileName))
+  , parser_(nullptr)
   , mainWindow_(nullptr)
   , taskModel_(nullptr)
 {
@@ -26,7 +26,9 @@ Manager::Manager(const QString &fileName)
   taskView_->setWindowModality(Qt::WindowModal);
 
   connect(taskView_.data(), &TaskView::taskAdded,  //
-          this, &Manager::addTask);
+          this, &Manager::requestAddTask);
+
+  updateSettings(fileName);
 }
 
 Manager::~Manager() = default;
@@ -44,24 +46,13 @@ void Manager::showTaskView()
   taskView_->show();
 }
 
-void Manager::addTask(const Task &task)
-{
-  SOFT_ASSERT(task.isValid(), return );
-  SOFT_ASSERT(parser_, return );
-  if (!parser_->append(task))
-    return;
-
-  if (taskModel_)
-    taskModel_->addTask(task);
-}
-
 void Manager::showMainWindow()
 {
   SOFT_ASSERT(parser_, return );
   if (!mainWindow_) {
     taskModel_.reset(new TaskModel);
     mainWindow_.reset(new MainWindow(*taskModel_));
-    taskModel_->setTasks(parser_->loadAll());
+    populateTasksModel();
   }
 
   mainWindow_->show();
@@ -70,4 +61,35 @@ void Manager::showMainWindow()
 void Manager::quit()
 {
   QApplication::quit();
+}
+
+
+void Manager::updateSettings(const QString& fileName)
+{
+  parser_.reset(new Parser(fileName));
+  connect(this, &Manager::requestAddTask,  //
+          parser_.get(), &Parser::append);
+  connect(this, &Manager::requestLoadAll,  //
+          parser_.get(), &Parser::loadAll);
+
+  connect(parser_.get(), &Parser::loaded,  //
+          this, [this](const QVector<Task> &tasks) {
+            if (taskModel_)
+              taskModel_->setTasks(tasks);
+          });
+  connect(parser_.get(), &Parser::appended,  //
+          this, [this](const Task &task) {
+            if (taskModel_)
+              taskModel_->addTask(task);
+          });
+
+  populateTasksModel();
+}
+
+void Manager::populateTasksModel()
+{
+  if (!taskModel_)
+    return;
+
+  requestLoadAll();
 }
