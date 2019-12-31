@@ -3,9 +3,9 @@
 #include <QWidget>
 
 class Task;
+class CompletableLineEdit;
 
 class QDateTimeEdit;
-class QLineEdit;
 class QCalendarWidget;
 
 class TaskView : public QWidget
@@ -13,10 +13,11 @@ class TaskView : public QWidget
   Q_OBJECT
 
 public:
-  explicit TaskView(QWidget *parent = nullptr);
+  explicit TaskView(QWidget* parent = nullptr);
   ~TaskView();
 
   void reset();
+  void setKeywords(const QStringList& words);
   void setVisible(bool visible) override;
   bool eventFilter(QObject* watched, QEvent* event) override;
 
@@ -37,6 +38,6 @@ private:
   void setFrameless(bool on);
 
   QDateTimeEdit* date_;
-  QLineEdit* text_;
+  CompletableLineEdit* text_;
   QCalendarWidget* calendar_;
 };

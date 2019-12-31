@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QPointer>
 
 class TaskView;
 class TrayIcon;
@@ -28,10 +29,11 @@ private:
   void quit();
   void updateSettings(const QString& fileName);
   void populateTasksModel();
+  void destroyTasksModel();
 
   QScopedPointer<TrayIcon> tray_;
   QScopedPointer<TaskView> taskView_;
   QScopedPointer<Parser> parser_;
-  QScopedPointer<MainWindow> mainWindow_;
+  QPointer<MainWindow> mainWindow_;
   QScopedPointer<TaskModel> taskModel_;
 };

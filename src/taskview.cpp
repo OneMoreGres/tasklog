@@ -1,6 +1,7 @@
 #include "taskview.h"
 #include "constants.h"
 #include "debug.h"
+#include "multicompletablelineedit.h"
 #include "task.h"
 
 #include <QApplication>
@@ -8,7 +9,6 @@
 #include <QCalendarWidget>
 #include <QContextMenuEvent>
 #include <QDateTimeEdit>
-#include <QLineEdit>
 #include <QMenu>
 #include <QScreen>
 #include <QSettings>
@@ -16,7 +16,7 @@
 TaskView::TaskView(QWidget *parent)
   : QWidget(parent)
   , date_(new QDateTimeEdit(this))
-  , text_(new QLineEdit(this))
+  , text_(new CompletableLineEdit(this))
   , calendar_(nullptr)
 {
   setWindowTitle(tr("Add record"));
@@ -93,6 +93,11 @@ void TaskView::reset()
   date_->setDateTime(QDateTime::currentDateTime());
   text_->clear();
   text_->setFocus();
+}
+
+void TaskView::setKeywords(const QStringList &words)
+{
+  text_->setCompletions(words);
 }
 
 void TaskView::setVisible(bool visible)

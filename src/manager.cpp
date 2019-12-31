@@ -48,11 +48,13 @@ void Manager::showTaskView()
 
 void Manager::showMainWindow()
 {
-  SOFT_ASSERT(parser_, return );
   if (!mainWindow_) {
     taskModel_.reset(new TaskModel);
-    mainWindow_.reset(new MainWindow(*taskModel_));
+    mainWindow_ = new MainWindow(*taskModel_);
+    mainWindow_->setAttribute(Qt::WA_DeleteOnClose);
     populateTasksModel();
+    connect(mainWindow_, &MainWindow::destroyed,  //
+            this, &Manager::destroyTasksModel);
   }
 
   mainWindow_->show();
@@ -66,11 +68,13 @@ void Manager::quit()
 
 void Manager::updateSettings(const QString& fileName)
 {
-  parser_.reset(new Parser(fileName));
+  parser_.reset(new Parser(fileName, "#@"));
   connect(this, &Manager::requestAddTask,  //
           parser_.get(), &Parser::append);
   connect(this, &Manager::requestLoadAll,  //
           parser_.get(), &Parser::loadAll);
+  connect(this, &Manager::requestParseKeywords,  //
+          parser_.get(), &Parser::parseKeywords);
 
   connect(parser_.get(), &Parser::loaded,  //
           this, [this](const QVector<Task> &tasks) {
@@ -82,6 +86,13 @@ void Manager::updateSettings(const QString& fileName)
             if (taskModel_)
               taskModel_->addTask(task);
           });
+  connect(parser_.get(), &Parser::keywordsUpdated,  //
+          this, [this](const QStringList &words) {
+            if (taskView_)
+              taskView_->setKeywords(words);
+          });
+
+  requestParseKeywords();
 
   populateTasksModel();
 }
@@ -92,4 +103,9 @@ void Manager::populateTasksModel()
     return;
 
   requestLoadAll();
+}
+
+void Manager::destroyTasksModel()
+{
+  taskModel_.reset();
 }

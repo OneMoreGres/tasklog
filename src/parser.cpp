@@ -68,6 +68,23 @@ struct MdFormat {
     return writer.writeAt(addState.position, data);
   }
 
+  QStringList parseKeywords(const QString &text,
+                            const QString &keywordPrefixes) const
+  {
+    if (keywordPrefixes.isEmpty())
+      return {};
+
+    QStringList result;
+    const auto parts = text.split(' ', QString::SkipEmptyParts);
+    for (const auto &part : parts) {
+      if (part.size() < 2)
+        continue;
+      if (keywordPrefixes.contains(part[0]))
+        result.append(part.mid(1));
+    }
+    return result;
+  }
+
 private:
   struct InsertState {
     int position{0};
@@ -229,8 +246,9 @@ private:
 };
 }  // namespace
 
-Parser::Parser(const QString &fileName)
+Parser::Parser(const QString &fileName, const QString &keywordPrefixes)
   : fileName_(fileName)
+  , keywordPrefixes_(keywordPrefixes)
 {
 }
 
@@ -251,4 +269,36 @@ void Parser::append(const Task &task)
     return;
 
   emit appended(task);
+
+  auto keywords = format.parseKeywords(task.text, keywordPrefixes_);
+  auto added = false;
+  for (const auto &i : keywords) {
+    if (keywords_.contains(i))
+      continue;
+    auto it = std::lower_bound(keywords_.begin(), keywords_.end(), i);
+    keywords_.insert(it, i);
+    added = true;
+  }
+
+  if (added)
+    emit keywordsUpdated(keywords_);
+}
+
+void Parser::parseKeywords()
+{
+  MdFormat format;
+  const auto tasks = format.loadTasks(fileName_);
+
+  keywords_.clear();
+
+  for (const auto &task : tasks) {
+    const auto words = format.parseKeywords(task.text, keywordPrefixes_);
+    for (const auto &word : words) {
+      if (!keywords_.contains(word))
+        keywords_.append(word);
+    }
+  }
+
+  std::sort(keywords_.begin(), keywords_.end());
+  emit keywordsUpdated(keywords_);
 }
