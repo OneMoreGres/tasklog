@@ -23,6 +23,8 @@ signals:
   void quitRequested();
 
 private:
+  void handleIconClick(QSystemTrayIcon::ActivationReason reason);
+
   QSystemTrayIcon* tray_;
   QAction* addRecordAction_;
 };

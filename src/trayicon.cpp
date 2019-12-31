@@ -34,6 +34,9 @@ TrayIcon::TrayIcon()
             this, &TrayIcon::quitRequested);
   }
 
+  connect(tray_, &QSystemTrayIcon::activated,  //
+          this, &TrayIcon::handleIconClick);
+
   tray_->setContextMenu(menu);
   tray_->setIcon(QIcon(QLatin1String(":icons/app.png")));
   tray_->show();
@@ -52,3 +55,10 @@ void TrayIcon::updateSettings(const Settings &settings)
 }
 
 TrayIcon::~TrayIcon() = default;
+
+void TrayIcon::handleIconClick(QSystemTrayIcon::ActivationReason reason)
+{
+  if (reason == QSystemTrayIcon::ActivationReason::DoubleClick) {
+    emit mainWindowRequested();
+  }
+}
