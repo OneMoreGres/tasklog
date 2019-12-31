@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QModelIndex>
 #include <QObject>
 #include <QPointer>
 
@@ -29,6 +30,7 @@ private:
   void showMainWindow();
   void showSettings();
   void quit();
+  void saveAs(const QString& fileName, const QModelIndexList& indexes);
   void updateSettings();
   void populateTasksModel();
   void destroyTasksModel();

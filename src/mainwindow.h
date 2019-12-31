@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QModelIndex>
 
 class TaskModel;
 class QTableView;
@@ -17,13 +18,16 @@ public:
 
   bool eventFilter(QObject* watched, QEvent* event) override;
 
+signals:
+  void saveAs(const QString& fileName, const QModelIndexList& indexes);
+
 private:
   void saveState();
   void restoreState();
   void applyFilter();
   void focusFilter();
+  void promptSaveAs();
 
-  TaskModel& model_;
   QSortFilterProxyModel* proxy_;
   QTableView* view_;
   QLineEdit* filter_;

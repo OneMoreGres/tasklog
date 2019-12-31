@@ -15,6 +15,7 @@ public:
 
   void setTasks(const QVector<Task> &tasks);
   void addTask(const Task &task);
+  Task task(const QModelIndex &index) const;
 
   int rowCount(const QModelIndex &parent) const override;
   int columnCount(const QModelIndex &parent) const override;

@@ -71,6 +71,8 @@ void Manager::showMainWindow()
     populateTasksModel();
     connect(mainWindow_, &MainWindow::destroyed,  //
             this, &Manager::destroyTasksModel);
+    connect(mainWindow_, &MainWindow::saveAs,  //
+            this, &Manager::saveAs);
   }
 
   mainWindow_->show();
@@ -91,6 +93,18 @@ void Manager::showSettings()
 void Manager::quit()
 {
   QApplication::quit();
+}
+
+void Manager::saveAs(const QString &fileName, const QModelIndexList &indexes)
+{
+  SOFT_ASSERT(taskModel_, return );
+  QVector<Task> tasks;
+  Parser parser(fileName, {});
+  for (const auto &i : indexes) {
+    const auto task = taskModel_->task(i);
+    if (task.isValid())
+      parser.append(task);
+  }
 }
 
 void Manager::updateSettings()

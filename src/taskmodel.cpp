@@ -24,6 +24,14 @@ void TaskModel::addTask(const Task &task)
   endInsertRows();
 }
 
+Task TaskModel::task(const QModelIndex &index) const
+{
+  if (index.row() >= 0 && index.row() < tasks_.size()) {
+    return tasks_[index.row()];
+  }
+  return {};
+}
+
 int TaskModel::rowCount(const QModelIndex & /*parent*/) const
 {
   return tasks_.size();

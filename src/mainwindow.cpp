@@ -1,19 +1,20 @@
 #include "mainwindow.h"
 #include "constants.h"
+#include "debug.h"
 #include "taskmodel.h"
 
-#include <QAction>
 #include <QBoxLayout>
+#include <QFileDialog>
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QMenuBar>
 #include <QSettings>
 #include <QSortFilterProxyModel>
 #include <QTableView>
 
 MainWindow::MainWindow(TaskModel &model, QWidget *parent)
   : QMainWindow(parent)
-  , model_(model)
   , proxy_(new QSortFilterProxyModel(this))
   , view_(new QTableView(this))
   , filter_(new QLineEdit(this))
@@ -30,14 +31,6 @@ MainWindow::MainWindow(TaskModel &model, QWidget *parent)
   connect(filter_, &QLineEdit::textChanged,  //
           this, &MainWindow::applyFilter);
 
-  {
-    auto action = new QAction(this);
-    action->setShortcut(QKeySequence("Ctrl+F"));
-    addAction(action);
-    connect(action, &QAction::triggered,  //
-            this, &MainWindow::focusFilter);
-  }
-
   proxy_->setFilterCaseSensitivity(Qt::CaseSensitivity::CaseInsensitive);
   proxy_->setDynamicSortFilter(true);
   proxy_->setFilterKeyColumn(int(TaskModel::Column::Name));
@@ -53,6 +46,23 @@ MainWindow::MainWindow(TaskModel &model, QWidget *parent)
   view_->setSortingEnabled(true);
   view_->horizontalHeader()->setSortIndicator(int(TaskModel::Column::Date),
                                               Qt::AscendingOrder);
+
+  {
+    auto menu = new QMenu(tr("File"));
+    {
+      auto action = menu->addAction(tr("Filter"));
+      action->setShortcut(QKeySequence("Ctrl+F"));
+      connect(action, &QAction::triggered,  //
+              this, &MainWindow::focusFilter);
+    }
+    {
+      auto action = menu->addAction(tr("Save as..."));
+      action->setShortcut(QKeySequence("Ctrl+S"));
+      connect(action, &QAction::triggered,  //
+              this, &MainWindow::promptSaveAs);
+    }
+    menuBar()->addMenu(menu);
+  }
 
   restoreState();
 }
@@ -88,6 +98,34 @@ void MainWindow::applyFilter()
 void MainWindow::focusFilter()
 {
   filter_->setFocus();
+}
+
+void MainWindow::promptSaveAs()
+{
+  const auto fileName = QFileDialog::getSaveFileName(this, tr("Save file"));
+  if (fileName.isEmpty())
+    return;
+  const auto selection = view_->selectionModel();
+  SOFT_ASSERT(selection, return );
+  const auto indexes = selection->selectedRows();
+  QModelIndexList sourceIndexes;
+  if (!indexes.isEmpty()) {
+    sourceIndexes.reserve(indexes.size());
+    for (const auto &i : indexes) {
+      sourceIndexes.append(proxy_->mapToSource(i));
+    }
+  } else {
+    sourceIndexes.reserve(proxy_->rowCount());
+    for (auto i = 0, end = proxy_->rowCount(); i < end; ++i) {
+      const auto index = proxy_->index(i, 0);
+      sourceIndexes.append(proxy_->mapToSource(index));
+    }
+  }
+
+  if (sourceIndexes.isEmpty())
+    return;
+
+  emit saveAs(fileName, sourceIndexes);
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
