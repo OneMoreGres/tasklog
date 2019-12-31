@@ -24,6 +24,8 @@ MainWindow::MainWindow(TaskModel &model, QWidget *parent)
   layout->addWidget(filter_);
   layout->addWidget(view_);
 
+  view_->installEventFilter(this);
+
   filter_->setPlaceholderText(tr("Type to filter..."));
   filter_->installEventFilter(this);
   filter_->setFocus();
@@ -130,16 +132,36 @@ void MainWindow::promptSaveAs()
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
-  const auto consume = false;
-  if (watched != filter_ || event->type() != QEvent::KeyPress)
+  auto consume = false;
+  if (event->type() != QEvent::KeyPress)
     return consume;
 
-  auto casted = static_cast<QKeyEvent *>(event);
-  if (casted->key() == Qt::Key_Down) {
-    view_->setFocus();
-    view_->selectRow(0);
-  } else if (casted->key() == Qt::Key_Escape) {
-    filter_->clear();
+  const auto casted = static_cast<QKeyEvent *>(event);
+  const auto key = casted->key();
+  if (watched == filter_) {
+    if (key == Qt::Key_Down || key == Qt::Key_Up) {
+      view_->setFocus();
+      const auto isUp = key == Qt::Key_Up;
+      const auto row = isUp ? proxy_->rowCount() - 1 : 0;
+      view_->selectRow(row);
+    } else if (casted->key() == Qt::Key_Escape) {
+      filter_->clear();
+    }
+  } else if (watched == view_) {
+    if (key == Qt::Key_Down || key == Qt::Key_Up) {
+      const auto current = view_->currentIndex().row();
+      const auto isUp = key == Qt::Key_Up;
+      auto row = isUp ? current - 1 : current + 1;
+      if (row < 0)
+        row = proxy_->rowCount() - 1;
+      else if (row >= proxy_->rowCount())
+        row = 0;
+      view_->selectRow(row);
+      consume = true;
+    }
+    if (key == Qt::Key_Escape) {
+      filter_->setFocus();
+    }
   }
 
   return consume;
