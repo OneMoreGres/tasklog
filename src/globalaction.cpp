@@ -243,8 +243,7 @@ quint32 GlobalAction::nativeKeycode(Qt::Key key)
     case Qt::Key_MediaStop: return VK_MEDIA_STOP;
     case Qt::Key_VolumeDown: return VK_VOLUME_DOWN;
     case Qt::Key_VolumeUp: return VK_VOLUME_UP;
-    case Qt::Key_VolumeMute:
-      return VK_VOLUME_MUTE;
+    case Qt::Key_VolumeMute: return VK_VOLUME_MUTE;
 
     // numbers
     case Qt::Key_0:
@@ -256,8 +255,7 @@ quint32 GlobalAction::nativeKeycode(Qt::Key key)
     case Qt::Key_6:
     case Qt::Key_7:
     case Qt::Key_8:
-    case Qt::Key_9:
-      return key;
+    case Qt::Key_9: return key;
 
     // letters
     case Qt::Key_A:
