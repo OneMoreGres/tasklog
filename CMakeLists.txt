@@ -14,6 +14,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(Qt5LinguistTools)
+qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR}
+  translations/tasklog_ru.ts)
+add_custom_target(translations ALL DEPENDS ${QM_FILES})
+
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 add_executable(tasklog
@@ -46,6 +51,8 @@ add_executable(tasklog
 
   resources.qrc
 )
+
+add_dependencies (tasklog translations)
 
 target_link_libraries(tasklog PRIVATE Qt5::Widgets libstdc++.so)
 

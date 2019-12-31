@@ -3,8 +3,10 @@
 
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QLibraryInfo>
 #include <QLockFile>
 #include <QStandardPaths>
+#include <QTranslator>
 
 int main(int argc, char *argv[])
 {
@@ -14,6 +16,25 @@ int main(int argc, char *argv[])
   a.setApplicationVersion(VERSION);
 
   a.setQuitOnLastWindowClosed(false);
+
+  {
+    auto translator = new QTranslator;
+    const auto paths = QStringList{
+        {},
+        QLatin1String("translations"),
+        QLibraryInfo::location(QLibraryInfo::TranslationsPath),
+#ifdef Q_OS_LINUX
+        qgetenv("APPDIR") + QLatin1String("/translations"),  // appimage
+#endif
+    };
+    for (const auto &path : paths) {
+      if (translator->load(QLocale(), QStringLiteral("tasklog"),
+                           QStringLiteral("_"), path)) {
+        a.installTranslator(translator);
+        break;
+      }
+    }
+  }
 
   {
     QCommandLineParser parser;
