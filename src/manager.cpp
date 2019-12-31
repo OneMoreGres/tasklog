@@ -2,6 +2,8 @@
 #include "debug.h"
 #include "mainwindow.h"
 #include "parser.h"
+#include "settings.h"
+#include "settingseditor.h"
 #include "task.h"
 #include "taskmodel.h"
 #include "taskview.h"
@@ -9,7 +11,7 @@
 
 #include <QApplication>
 
-Manager::Manager(const QString &fileName)
+Manager::Manager()
   : tray_(new TrayIcon)
   , taskView_(new TaskView)
   , parser_(nullptr)
@@ -20,6 +22,8 @@ Manager::Manager(const QString &fileName)
           this, &Manager::showTaskView);
   connect(tray_.data(), &TrayIcon::mainWindowRequested,  //
           this, &Manager::showMainWindow);
+  connect(tray_.data(), &TrayIcon::settingsRequested,  //
+          this, &Manager::showSettings);
   connect(tray_.data(), &TrayIcon::quitRequested,  //
           this, &Manager::quit);
 
@@ -28,7 +32,7 @@ Manager::Manager(const QString &fileName)
   connect(taskView_.data(), &TaskView::taskAdded,  //
           this, &Manager::requestAddTask);
 
-  updateSettings(fileName);
+  updateSettings();
 }
 
 Manager::~Manager() = default;
@@ -60,15 +64,30 @@ void Manager::showMainWindow()
   mainWindow_->show();
 }
 
+void Manager::showSettings()
+{
+  if (!settingsEditor_) {
+    settingsEditor_ = new SettingsEditor;
+    settingsEditor_->setAttribute(Qt::WA_DeleteOnClose);
+    connect(settingsEditor_, &SettingsEditor::settingsChanged,  //
+            this, &Manager::updateSettings);
+  }
+
+  settingsEditor_->show();
+}
+
 void Manager::quit()
 {
   QApplication::quit();
 }
 
-
-void Manager::updateSettings(const QString& fileName)
+void Manager::updateSettings()
 {
-  parser_.reset(new Parser(fileName, "#@"));
+  Settings settings;
+  settings.load();
+
+  parser_.reset(
+      new Parser(settings.workingFileName(), settings.keywordPrefixes()));
   connect(this, &Manager::requestAddTask,  //
           parser_.get(), &Parser::append);
   connect(this, &Manager::requestLoadAll,  //
@@ -93,6 +112,9 @@ void Manager::updateSettings(const QString& fileName)
           });
 
   requestParseKeywords();
+
+  SOFT_ASSERT(tray_, return );
+  tray_->updateSettings(settings);
 
   populateTasksModel();
 }

@@ -1,8 +1,10 @@
 #pragma once
 
-#include <QObject>
+#include <QSystemTrayIcon>
 
-class QSystemTrayIcon;
+class Settings;
+
+class QAction;
 
 class TrayIcon : public QObject
 {
@@ -12,11 +14,15 @@ public:
   TrayIcon();
   ~TrayIcon();
 
+  void updateSettings(const Settings& settings);
+
 signals:
   void addTaskRequested();
   void mainWindowRequested();
+  void settingsRequested();
   void quitRequested();
 
 private:
-  QSystemTrayIcon *tray_;
+  QSystemTrayIcon* tray_;
+  QAction* addRecordAction_;
 };

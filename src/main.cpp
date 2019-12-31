@@ -6,34 +6,6 @@
 #include <QLockFile>
 #include <QStandardPaths>
 
-struct CmdLine {
-  QString fileName;
-};
-
-CmdLine parseCmdLine(QApplication &a)
-{
-  QCommandLineParser parser;
-  parser.setApplicationDescription(QObject::tr("Task journal helper"));
-  parser.addHelpOption();
-  parser.addVersionOption();
-
-  parser.addPositionalArgument("journal",
-                               QObject::tr("Journal file to maintain."));
-
-  parser.process(a);
-
-  CmdLine result;
-
-  const auto args = parser.positionalArguments();
-  if (!args.isEmpty()) {
-    result.fileName = args.last();
-  } else {
-    result.fileName = "journal.md";
-  }
-
-  return result;
-}
-
 int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
@@ -42,6 +14,15 @@ int main(int argc, char *argv[])
   a.setApplicationVersion(VERSION);
 
   a.setQuitOnLastWindowClosed(false);
+
+  {
+    QCommandLineParser parser;
+    parser.setApplicationDescription(QObject::tr("Task journal helper"));
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    parser.process(a);
+  }
 
   const auto lockFileName =
       QStandardPaths::writableLocation(QStandardPaths::TempLocation) +
@@ -52,8 +33,7 @@ int main(int argc, char *argv[])
     return 0;
   }
 
-  const auto cmdLine = parseCmdLine(a);
-  Manager manager(cmdLine.fileName);
+  Manager manager;
 
   return a.exec();
 }

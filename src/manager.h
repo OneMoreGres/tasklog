@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QPointer>
 
+class SettingsEditor;
 class TaskView;
 class TrayIcon;
 class Parser;
@@ -15,7 +16,7 @@ class Manager : public QObject
   Q_OBJECT
 
 public:
-  explicit Manager(const QString& fileName);
+  Manager();
   ~Manager();
 
 signals:
@@ -26,8 +27,9 @@ signals:
 private:
   void showTaskView();
   void showMainWindow();
+  void showSettings();
   void quit();
-  void updateSettings(const QString& fileName);
+  void updateSettings();
   void populateTasksModel();
   void destroyTasksModel();
 
@@ -36,4 +38,5 @@ private:
   QScopedPointer<Parser> parser_;
   QPointer<MainWindow> mainWindow_;
   QScopedPointer<TaskModel> taskModel_;
+  QPointer<SettingsEditor> settingsEditor_;
 };

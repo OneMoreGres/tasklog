@@ -35,6 +35,10 @@ add_executable(tasklog
   src/taskmodel.h
   src/trayicon.cpp
   src/trayicon.h
+  src/settingseditor.cpp
+  src/settingseditor.h
+  src/settings.cpp
+  src/settings.h
   src/multicompletablelineedit.cpp
   src/multicompletablelineedit.h
   src/filewriter.cpp
