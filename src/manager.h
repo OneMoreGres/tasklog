@@ -39,4 +39,5 @@ private:
   QPointer<MainWindow> mainWindow_;
   QScopedPointer<TaskModel> taskModel_;
   QPointer<SettingsEditor> settingsEditor_;
+  QThread* worker_;
 };

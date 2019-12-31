@@ -10,6 +10,7 @@
 #include "trayicon.h"
 
 #include <QApplication>
+#include <QThread>
 
 Manager::Manager()
   : tray_(new TrayIcon)
@@ -17,7 +18,10 @@ Manager::Manager()
   , parser_(nullptr)
   , mainWindow_(nullptr)
   , taskModel_(nullptr)
+  , worker_(new QThread(this))
 {
+  qRegisterMetaType<Task>();
+  qRegisterMetaType<QVector<Task>>();
   connect(tray_.data(), &TrayIcon::addTaskRequested,  //
           this, &Manager::showTaskView);
   connect(tray_.data(), &TrayIcon::mainWindowRequested,  //
@@ -32,10 +36,18 @@ Manager::Manager()
   connect(taskView_.data(), &TaskView::taskAdded,  //
           this, &Manager::requestAddTask);
 
+  worker_->start();
+
   updateSettings();
 }
 
-Manager::~Manager() = default;
+Manager::~Manager()
+{
+  worker_->quit();
+  const auto timeoutMs = 5000;
+  if (!worker_->wait(timeoutMs))
+    worker_->terminate();
+}
 
 void Manager::showTaskView()
 {
@@ -110,6 +122,7 @@ void Manager::updateSettings()
             if (taskView_)
               taskView_->setKeywords(words);
           });
+  parser_->moveToThread(worker_);
 
   requestParseKeywords();
 
