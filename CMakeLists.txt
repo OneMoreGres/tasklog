@@ -53,7 +53,7 @@ add_executable(tasklog
 
 add_dependencies (tasklog translations)
 
-target_link_libraries(tasklog PRIVATE Qt5::Widgets libstdc++.so)
+target_link_libraries(tasklog PRIVATE Qt5::Widgets)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   find_package(Qt5 COMPONENTS X11Extras REQUIRED)
