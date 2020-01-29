@@ -1,0 +1,9 @@
+[Desktop Entry]
+Comment=Task journaling tool
+Exec=tasklog
+GenericName=TaskLog
+Icon=tasklog
+Name=TaskLog
+Terminal=false
+Type=Application
+Categories=Utility;Core;Qt;
