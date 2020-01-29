@@ -32,7 +32,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="41"/>
+        <location filename="../src/main.cpp" line="47"/>
         <source>Task journal helper</source>
         <translation>Программа ведения журнала задач</translation>
     </message>
