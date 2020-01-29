@@ -18,22 +18,28 @@ int main(int argc, char *argv[])
   a.setQuitOnLastWindowClosed(false);
 
   {
-    auto translator = new QTranslator;
     const auto paths = QStringList{
-        {},
-        QLatin1String("translations"),
         QLibraryInfo::location(QLibraryInfo::TranslationsPath),
 #ifdef Q_OS_LINUX
-        qgetenv("APPDIR") + QLatin1String("/translations"),  // appimage
-#endif
+        qgetenv("APPDIR") +
+            QLibraryInfo::location(QLibraryInfo::TranslationsPath),  // appimage
+#endif  // ifdef Q_OS_LINUX
+        {},
+        QLatin1String("translations"),
     };
-    for (const auto &path : paths) {
-      if (translator->load(QLocale(), QStringLiteral("tasklog"),
-                           QStringLiteral("_"), path)) {
-        a.installTranslator(translator);
-        break;
+
+    QStringList names{QStringLiteral("qt"), QStringLiteral("tasklog")};
+    auto translator = new QTranslator;
+    for (const auto &name : names) {
+      for (const auto &path : paths) {
+        if (translator->load(QLocale(), name, QStringLiteral("_"), path)) {
+          a.installTranslator(translator);
+          translator = new QTranslator;
+          break;
+        }
       }
     }
+    delete translator;
   }
 
   {
@@ -46,11 +52,12 @@ int main(int argc, char *argv[])
   }
 
   const auto lockFileName =
-    QStandardPaths::writableLocation(QStandardPaths::TempLocation) +
-    QStringLiteral("/tasklog.lock");
+      QStandardPaths::writableLocation(QStandardPaths::TempLocation) +
+      QStringLiteral("/tasklog.lock");
   QLockFile lockFile(lockFileName);
   if (!lockFile.tryLock()) {
-    LWARNING() << "Another instance is running. Lock file is busy." << lockFileName;
+    LWARNING() << "Another instance is running. Lock file is busy."
+               << lockFileName;
     return 0;
   }
 

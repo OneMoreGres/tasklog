@@ -6,27 +6,27 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="29"/>
         <source>Type to filter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите для фильтра...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="53"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="55"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтр</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="61"/>
         <source>Save as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить как...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="107"/>
         <source>Save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить файл</translation>
     </message>
 </context>
 <context>
@@ -34,23 +34,24 @@
     <message>
         <location filename="../src/main.cpp" line="41"/>
         <source>Task journal helper</source>
-        <translation type="unfinished"></translation>
+        <translation>Программа ведения журнала задач</translation>
     </message>
     <message>
         <location filename="../src/parser.cpp" line="25"/>
         <source>Failed to open file for reading</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть файл для чтения</translation>
     </message>
     <message>
         <location filename="../src/parser.cpp" line="44"/>
         <source>File for saving task not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Не задан файл для сохранения задач</translation>
     </message>
     <message>
         <location filename="../src/parser.cpp" line="54"/>
         <source># Completed tasks list:
 </source>
-        <translation type="unfinished"></translation>
+        <translation># Завершенные задачи:
+</translation>
     </message>
 </context>
 <context>
@@ -58,22 +59,22 @@
     <message>
         <location filename="../src/settingseditor.cpp" line="18"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../src/settingseditor.cpp" line="25"/>
         <source>Working file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Рабочий файл:</translation>
     </message>
     <message>
         <location filename="../src/settingseditor.cpp" line="32"/>
         <source>Keyword prefixes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Префиксы ключевых слов:</translation>
     </message>
     <message>
         <location filename="../src/settingseditor.cpp" line="34"/>
         <source>Add record hotkey:</source>
-        <translation type="unfinished"></translation>
+        <translation>Горячая клавиша добавления задачи:</translation>
     </message>
 </context>
 <context>
@@ -81,12 +82,12 @@
     <message>
         <location filename="../src/taskmodel.cpp" line="71"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата</translation>
     </message>
     <message>
         <location filename="../src/taskmodel.cpp" line="72"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Название</translation>
     </message>
 </context>
 <context>
@@ -94,17 +95,17 @@
     <message>
         <location filename="../src/taskview.cpp" line="22"/>
         <source>Add record</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить запись</translation>
     </message>
     <message>
         <location filename="../src/taskview.cpp" line="41"/>
         <source>Enter record text</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите текст записи</translation>
     </message>
     <message>
         <location filename="../src/taskview.cpp" line="172"/>
         <source>Show window frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать рамку окна</translation>
     </message>
 </context>
 <context>
@@ -112,22 +113,22 @@
     <message>
         <location filename="../src/trayicon.cpp" line="15"/>
         <source>Add record</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить запись</translation>
     </message>
     <message>
         <location filename="../src/trayicon.cpp" line="21"/>
         <source>Show existing</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать существующие</translation>
     </message>
     <message>
         <location filename="../src/trayicon.cpp" line="26"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../src/trayicon.cpp" line="32"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Выход</translation>
     </message>
 </context>
 </TS>

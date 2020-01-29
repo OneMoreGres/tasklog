@@ -14,12 +14,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5LinguistTools)
+find_package(Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
+
 qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR}
   translations/tasklog_ru.ts)
 add_custom_target(translations ALL DEPENDS ${QM_FILES})
-
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 add_executable(tasklog
   src/constants.h
@@ -60,4 +59,18 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   find_package(Qt5 COMPONENTS X11Extras REQUIRED)
   find_package(X11 REQUIRED)
   target_link_libraries(tasklog PRIVATE Qt5::X11Extras X11)
+
+  install(TARGETS tasklog DESTINATION /usr/bin)
+  install(FILES share/tasklog.desktop DESTINATION /usr/share/applications)
+  install(FILES share/book-512.png RENAME tasklog.png DESTINATION /usr/share/pixmaps/hicolor)
+  install(FILES ${QM_FILES} DESTINATION /usr/translations)
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  install(TARGETS tasklog DESTINATION /)
+  install(FILES ${QM_FILES} DESTINATION /translations)
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+
 endif()
