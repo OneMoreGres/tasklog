@@ -52,7 +52,7 @@ jobs:
 
       - name: Install system libs
         if: runner.os == 'Linux'
-        run: sudo apt install libgl1-mesa-dev libxkbcommon-x11-0
+        run: sudo apt install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-util0-dev
 
       - name: Get Qt
         run: python ./share/ci/get_qt.py
