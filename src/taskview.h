@@ -2,7 +2,7 @@
 
 #include <QWidget>
 
-class Task;
+struct Task;
 class CompletableLineEdit;
 
 class QDateTimeEdit;

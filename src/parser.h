@@ -2,7 +2,7 @@
 
 #include <QObject>
 
-class Task;
+struct Task;
 
 class Parser : public QObject
 {

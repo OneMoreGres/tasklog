@@ -2,7 +2,7 @@
 
 #include <QAbstractTableModel>
 
-class Task;
+struct Task;
 
 class TaskModel : public QAbstractTableModel
 {
