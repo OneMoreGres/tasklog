@@ -46,11 +46,11 @@ int main(int argc, char *argv[])
   }
 
   const auto lockFileName =
-      QStandardPaths::writableLocation(QStandardPaths::TempLocation) +
-      QStringLiteral("/tasklog.lock");
+    QStandardPaths::writableLocation(QStandardPaths::TempLocation) +
+    QStringLiteral("/tasklog.lock");
   QLockFile lockFile(lockFileName);
   if (!lockFile.tryLock()) {
-    LWARNING() << "Another instance is running. Lock file is busy.";
+    LWARNING() << "Another instance is running. Lock file is busy." << lockFileName;
     return 0;
   }
 
