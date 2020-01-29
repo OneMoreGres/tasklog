@@ -20,7 +20,7 @@ qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR}
   translations/tasklog_ru.ts)
 add_custom_target(translations ALL DEPENDS ${QM_FILES})
 
-add_executable(tasklog
+add_executable(tasklog WIN32
   src/constants.h
   src/debug.h
   src/main.cpp

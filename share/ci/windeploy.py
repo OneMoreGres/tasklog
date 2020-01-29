@@ -25,6 +25,7 @@ deploy_cmd = '{}/bin/windeployqt.exe "{}"'.format(qt_dir, install_dir)
 c.run('{} && {}'.format(env_cmd, install_cmd))
 binary = 'tasklog.exe'
 os.rename(install_dir + '/bin/' + binary, install_dir + '/' + binary)
+os.rmdir('bin')
 c.run('{} && {}'.format(env_cmd, deploy_cmd))
 
 c.archive(c.get_folder_files(os.path.relpath(install_dir)), artifact_path)
