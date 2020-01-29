@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/icons">
-        <file alias="app.png">icons/book-32.png</file>
-        <file alias="app@2x.png">icons/book-64.png</file>
+        <file alias="app.png">share/book-32.png</file>
+        <file alias="app@2x.png">share/book-64.png</file>
     </qresource>
 </RCC>
