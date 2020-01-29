@@ -49,6 +49,8 @@ add_executable(tasklog
   src/filewriter.h
 
   resources.qrc
+
+  ${CMAKE_CURRENT_SOURCE_DIR}/share/win.rc
 )
 
 add_dependencies (tasklog translations)
@@ -67,7 +69,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  install(TARGETS tasklog DESTINATION /)
+  install(TARGETS tasklog DESTINATION /bin)
   install(FILES ${QM_FILES} DESTINATION /translations)
 endif()
 

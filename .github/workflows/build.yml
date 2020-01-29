@@ -37,6 +37,8 @@ jobs:
     strategy:
       matrix:
         config:
+          - { name: "win64", os: windows-latest }
+          - { name: "win32", os: windows-latest }
           - { name: "linux", os: ubuntu-16.04 }
     steps:
       - uses: actions/checkout@v2
