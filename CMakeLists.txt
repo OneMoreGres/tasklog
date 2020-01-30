@@ -20,7 +20,13 @@ qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR}
   translations/tasklog_ru.ts)
 add_custom_target(translations ALL DEPENDS ${QM_FILES})
 
-add_executable(tasklog WIN32
+set(OTHER_FILES "")
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  append(OTHER_FILES share/win.rc)
+endif()
+
+add_executable(tasklog WIN32 MACOSX_BUNDLE
   src/constants.h
   src/debug.h
   src/main.cpp
@@ -50,7 +56,7 @@ add_executable(tasklog WIN32
 
   resources.qrc
 
-  ${CMAKE_CURRENT_SOURCE_DIR}/share/win.rc
+  ${OTHER_FILES}
 )
 
 add_dependencies (tasklog translations)
@@ -74,5 +80,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-
+  FIND_LIBRARY(CARBON_LIBRARY Carbon)
+  target_link_libraries(tasklog PRIVATE ${CARBON_LIBRARY})
+  set(CMAKE_INSTALL_PREFIX tasklog.app)
+  install(TARGETS ${APP_NAME} BUNDLE DESTINATION .)
+  install(FILES ${QM_FILES} DESTINATION Contents/translations)
+  set (MACOSX_BUNDLE_ICON_FILE icon.icns)
+  install(FILES share/icon.icns DESTINATION Contents/Resources)
 endif()

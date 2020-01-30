@@ -7,6 +7,7 @@ qt_version = '5.14.0'
 qt_modules = ['qtbase', 'qttools', 'icu', 'qttranslations', 'qtx11extras']
 qt_dir = path.abspath('qt')
 
+target_name = 'tasklog'
 build_dir = path.abspath('build')
 cmake_file = path.abspath(path.dirname(__file__) + '/../../CMakeLists.txt')
 ts_files_dir = path.abspath(path.dirname(__file__) + '/../../translations')
