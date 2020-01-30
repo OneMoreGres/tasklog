@@ -20,10 +20,8 @@ qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR}
   translations/tasklog_ru.ts)
 add_custom_target(translations ALL DEPENDS ${QM_FILES})
 
-set(OTHER_FILES "")
-
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  append(OTHER_FILES share/win.rc)
+  set(OTHER_FILES share/win.rc)
 endif()
 
 add_executable(tasklog WIN32 MACOSX_BUNDLE
