@@ -13,7 +13,6 @@ public:
 
   void loadAll();
   void append(const Task& task);
-  void parseKeywords();
 
 signals:
   void loaded(const QVector<Task>& tasks);

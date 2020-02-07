@@ -259,8 +259,21 @@ Parser::~Parser() = default;
 void Parser::loadAll()
 {
   MdFormat format;
-  const auto result = format.loadTasks(fileName_);
-  emit loaded(result);
+  const auto tasks = format.loadTasks(fileName_);
+  emit loaded(tasks);
+
+  keywords_.clear();
+
+  for (const auto &task : tasks) {
+    const auto words = format.parseKeywords(task.text, keywordPrefixes_);
+    for (const auto &word : words) {
+      if (!keywords_.contains(word))
+        keywords_.append(word);
+    }
+  }
+
+  std::sort(keywords_.begin(), keywords_.end());
+  emit keywordsUpdated(keywords_);
 }
 
 void Parser::append(const Task &task)
@@ -284,23 +297,4 @@ void Parser::append(const Task &task)
 
   if (added)
     emit keywordsUpdated(keywords_);
-}
-
-void Parser::parseKeywords()
-{
-  MdFormat format;
-  const auto tasks = format.loadTasks(fileName_);
-
-  keywords_.clear();
-
-  for (const auto &task : tasks) {
-    const auto words = format.parseKeywords(task.text, keywordPrefixes_);
-    for (const auto &word : words) {
-      if (!keywords_.contains(word))
-        keywords_.append(word);
-    }
-  }
-
-  std::sort(keywords_.begin(), keywords_.end());
-  emit keywordsUpdated(keywords_);
 }

@@ -22,8 +22,7 @@ public:
 
 signals:
   void requestAddTask(const Task& task);
-  void requestLoadAll();
-  void requestParseKeywords();
+  void reloadTasksAndKeywords();
 
 private:
   void showTaskView();
@@ -32,7 +31,6 @@ private:
   void quit();
   void saveAs(const QString& fileName, const QModelIndexList& indexes);
   void updateSettings();
-  void populateTasksModel();
   void destroyTasksModel();
 
   QScopedPointer<TrayIcon> tray_;

@@ -5,7 +5,7 @@
 
 class TaskModel;
 class QTableView;
-class QLineEdit;
+class CompletableLineEdit;
 class QSortFilterProxyModel;
 
 class MainWindow : public QMainWindow
@@ -17,6 +17,7 @@ public:
   ~MainWindow();
 
   bool eventFilter(QObject* watched, QEvent* event) override;
+  void setKeywords(const QStringList& words);
 
 signals:
   void saveAs(const QString& fileName, const QModelIndexList& indexes);
@@ -32,5 +33,5 @@ private:
   QSortFilterProxyModel* proxy_;
   QAction* saveAs_{nullptr};
   QTableView* view_;
-  QLineEdit* filter_;
+  CompletableLineEdit* filter_;
 };

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "constants.h"
 #include "debug.h"
+#include "multicompletablelineedit.h"
 #include "taskmodel.h"
 
 #include <QBoxLayout>
@@ -17,7 +18,7 @@ MainWindow::MainWindow(TaskModel &model, QWidget *parent)
   : QMainWindow(parent)
   , proxy_(new QSortFilterProxyModel(this))
   , view_(new QTableView(this))
-  , filter_(new QLineEdit(this))
+  , filter_(new CompletableLineEdit(this))
 {
   setCentralWidget(new QWidget);
   auto layout = new QVBoxLayout(centralWidget());
@@ -175,4 +176,9 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
   }
 
   return consume;
+}
+
+void MainWindow::setKeywords(const QStringList &words)
+{
+  filter_->setCompletions(words);
 }
