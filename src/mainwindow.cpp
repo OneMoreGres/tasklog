@@ -48,6 +48,9 @@ MainWindow::MainWindow(TaskModel &model, QWidget *parent)
   view_->setSortingEnabled(true);
   view_->horizontalHeader()->setSortIndicator(int(TaskModel::Column::Date),
                                               Qt::AscendingOrder);
+  view_->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(view_, &QTableView::customContextMenuRequested,  //
+          this, &MainWindow::showContextMenu);
 
   {
     auto menu = new QMenu(tr("File"));
@@ -58,7 +61,7 @@ MainWindow::MainWindow(TaskModel &model, QWidget *parent)
               this, &MainWindow::focusFilter);
     }
     {
-      auto action = menu->addAction(tr("Save as..."));
+      auto action = saveAs_ = menu->addAction(tr("Save as..."));
       action->setShortcut(QKeySequence("Ctrl+S"));
       connect(action, &QAction::triggered,  //
               this, &MainWindow::promptSaveAs);
@@ -128,6 +131,13 @@ void MainWindow::promptSaveAs()
     return;
 
   emit saveAs(fileName, sourceIndexes);
+}
+
+void MainWindow::showContextMenu()
+{
+  QMenu menu;
+  menu.addAction(saveAs_);
+  menu.exec(QCursor::pos());
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)

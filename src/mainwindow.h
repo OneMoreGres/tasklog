@@ -27,8 +27,10 @@ private:
   void applyFilter();
   void focusFilter();
   void promptSaveAs();
+  void showContextMenu();
 
   QSortFilterProxyModel* proxy_;
+  QAction* saveAs_{nullptr};
   QTableView* view_;
   QLineEdit* filter_;
 };
