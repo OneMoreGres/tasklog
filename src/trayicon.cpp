@@ -58,7 +58,8 @@ TrayIcon::~TrayIcon() = default;
 
 void TrayIcon::handleIconClick(QSystemTrayIcon::ActivationReason reason)
 {
-  if (reason == QSystemTrayIcon::ActivationReason::DoubleClick) {
+  if (reason == QSystemTrayIcon::ActivationReason::DoubleClick ||
+      reason == QSystemTrayIcon::ActivationReason::MiddleClick) {
     emit mainWindowRequested();
   }
 }
