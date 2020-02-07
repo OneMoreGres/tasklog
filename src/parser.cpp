@@ -79,8 +79,10 @@ struct MdFormat {
     for (const auto &part : parts) {
       if (part.size() < 2)
         continue;
-      if (keywordPrefixes.contains(part[0]))
+      if (keywordPrefixes.contains(part[0])) {
+        result.append(part);
         result.append(part.mid(1));
+      }
     }
     return result;
   }
